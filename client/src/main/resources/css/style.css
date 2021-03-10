@@ -1,0 +1,136 @@
+.root {
+    -fx-font-size: 14;
+    -fx-background-color: #97be6a;
+}
+
+.button{
+    -fx-background-color: #97be6a;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+    -fx-border-radius: 5;
+}
+/*#sendButton {
+    -fx-background-color: #97be6a;
+    -fx-font-weight: bold;
+    -fx-border-color: black;
+    -fx-border-radius: 5;
+}*/
+
+#sendButton:hover, #authButton:hover {
+    -fx-background-color: #5d8831;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+#menuBar {
+    -fx-background-color: #97be6a;
+    -fx-font-size: 12;
+}
+
+.context-menu {
+    -fx-background-color: transparent; /*прозрачность*/
+    -fx-border-radius: 5;
+    -fx-padding: 0;
+}
+
+#menuFile:hover {
+    -fx-background-color: #5d8831;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+#menuItemExit:hover {
+    -fx-background-color: #5d8831;
+}
+
+#menuFile, #menuItemExit {
+    -fx-background-color: #97be6a;
+    -fx-border-color: black;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+
+#textField1, #loginField, #passwordField, #nicknamefield {
+    -fx-border-color: black;
+    -fx-border-radius: 9;
+    -fx-background-color: #d3e5bf;
+    -fx-background-radius: 9;
+}
+
+.text-area .content{
+    -fx-background-color: #d3e5bf;
+    -fx-background-radius: 9;
+}
+
+.text-area .scroll-bar:vertical {
+    -fx-background-color: #d3e5bf;
+}
+
+.text-area .scroll-bar:vertical .thumb {
+    -fx-background-color: #5d8831;
+}
+
+.text-area {
+    -fx-background-color: #d3e5bf;
+    -fx-background-radius: 9;
+    -fx-border-color: black;
+    -fx-border-radius: 9;
+    -fx-font-weight: bold;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: #d3e5bf;
+    -fx-background-radius: 9;
+}
+
+.text-area .scroll-pane .viewport {
+    -fx-background-color: #d3e5bf;
+    -fx-background-radius: 9;
+}
+
+
+
+
+
+
+
+
+
+
+.list-view .content{
+    -fx-background-color: #d3e5bf;
+    -fx-background-radius: 9;
+}
+
+.list-view .scroll-bar:vertical {
+    -fx-background-color: #d3e5bf;
+}
+
+.list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #5d8831;
+}
+
+.list-view {
+    -fx-background-color: #d3e5bf;
+    -fx-background-radius: 9;
+    -fx-border-color: black;
+    -fx-border-radius: 9;
+    -fx-font-style: italic;
+}
+
+.list-view .scroll-pane {
+    -fx-background-color: #d3e5bf;
+    -fx-background-radius: 9;
+}
+
+.list-view .scroll-pane .viewport {
+    -fx-background-color: #d3e5bf;
+    -fx-background-radius: 9;
+}
+
+
+
+
+
+

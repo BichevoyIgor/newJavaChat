@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+    <stylesheets>
+        <URL value="@/css/style.css"/>
+    </stylesheets>
+
+
+    <top>
+        <MenuBar fx:id="menuBar">
+            <cursor>
+                <Cursor fx:constant="HAND"/>
+            </cursor>
+            <Menu text="File" fx:id="menuFile">
+                <MenuItem fx:id="menuItemExit" onAction="#CloseWindow" text="Close window"/>
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <center>
+        <GridPane vgap="5">
+
+            <HBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="5" fx:id="authPanel" visible="true"
+                  managed="true">
+                <TextField fx:id="loginField" promptText="login" onAction="#tryAuth"/>
+                <PasswordField fx:id="passwordField" promptText="password" onAction="#tryAuth"/>
+                <Button fx:id="authButton" text="auth" onAction="#tryAuth" minWidth="100"/>
+                <Button text="reg" onAction="#showRegWindow" minWidth="100"/>
+            </HBox>
+
+            <GridPane hgap="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <TextArea fx:id="textArea1" editable="false" focusTraversable="false" GridPane.columnIndex="0"
+                          GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS"/>
+                <ListView fx:id="clientList" visible="false" managed="false" minWidth="100" GridPane.columnIndex="1"
+                           GridPane.rowIndex="0" onMouseReleased="#clientListMouseReleased"/>
+            </GridPane>
+            <GridPane fx:id="messagePanel" hgap="5" GridPane.columnIndex="0" GridPane.rowIndex="2" visible="false"
+                      managed="false">
+                <TextField fx:id="textField1" onKeyReleased="#sendTextFromTextField" GridPane.columnIndex="0"
+                           GridPane.hgrow="ALWAYS" GridPane.rowIndex="0"/>
+                <Button fx:id="sendButton" onAction="#send" text="Send" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Button>
+            </GridPane>
+        </GridPane>
+    </center>
+
+
+    <padding>
+        <Insets bottom="5.0" left="5" right="5"/>
+    </padding>
+
+</BorderPane>
