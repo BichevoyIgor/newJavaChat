@@ -43,7 +43,7 @@
     -fx-background-color: #5d8831;
 }
 
-#menuFile, #menuItemExit {
+#menuFile, #menuItemExit, #changeNick {
     -fx-background-color: #97be6a;
     -fx-border-color: black;
     -fx-border-radius: 5;
@@ -88,15 +88,6 @@
     -fx-background-color: #d3e5bf;
     -fx-background-radius: 9;
 }
-
-
-
-
-
-
-
-
-
 
 .list-view .content{
     -fx-background-color: #d3e5bf;
