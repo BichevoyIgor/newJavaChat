@@ -18,6 +18,7 @@
             </cursor>
             <Menu text="File" fx:id="menuFile">
                 <MenuItem fx:id="menuItemExit" onAction="#CloseWindow" text="Close window"/>
+                <MenuItem fx:id="changeNick" onAction="#ChangeNick" text="Change nick name"/>
             </Menu>
         </MenuBar>
     </top>

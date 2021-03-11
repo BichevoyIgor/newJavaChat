@@ -48,6 +48,7 @@ public class Controller implements Initializable {
     public HBox authPanel;
     @FXML
     public ListView<String> clientList;
+    public MenuItem changeNick;
 
     private Socket socket;
     private final int PORT = 9999;
@@ -100,6 +101,7 @@ public class Controller implements Initializable {
             new Thread(() -> {
                 try {
                     while (true) {
+
                         String str = in.readUTF();
                         if (str.startsWith("/")) {
                             if (str.equals(Command.END)) {
@@ -256,5 +258,9 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void ChangeNick(ActionEvent actionEvent) {
+        textField1.appendText(Command.CHNG_NICK + " " + nickname + " to: ");
     }
 }

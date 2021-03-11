@@ -19,7 +19,11 @@ public class Server {
 
     public Server() {
         clientHandlerList = new CopyOnWriteArrayList<>();
-        authService = new SimpleAuthService();
+        //authService = new SimpleAuthService();
+        if (!SQLHandler.connect()){
+            throw new RuntimeException("Не удалось подключиться");
+        }
+        authService = new DBAuthService();
         try {
             server = new ServerSocket(PORT);
             System.out.println("Сервер запущен");
@@ -34,6 +38,7 @@ public class Server {
             e.printStackTrace();
         } finally {
             try {
+                SQLHandler.disconnect();
                 socket.close();
                 server.close();
             } catch (IOException e) {
