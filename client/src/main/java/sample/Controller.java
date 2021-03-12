@@ -179,7 +179,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void CloseWindow(ActionEvent actionEvent) {
+    public void closeWindow(ActionEvent actionEvent) {
         Platform.runLater(() -> {
             Stage stage = (Stage) sendButton.getScene().getWindow();
             stage.close();
@@ -260,7 +260,7 @@ public class Controller implements Initializable {
         }
     }
 
-    public void ChangeNick(ActionEvent actionEvent) {
+    public void changeNick(ActionEvent actionEvent) {
         textField1.appendText(Command.CHNG_NICK + " " + nickname + " to: ");
     }
 }
