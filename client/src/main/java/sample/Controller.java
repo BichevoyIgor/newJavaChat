@@ -48,6 +48,7 @@ public class Controller implements Initializable {
     public HBox authPanel;
     @FXML
     public ListView<String> clientList;
+    public MenuItem changeNick;
 
     private Socket socket;
     private final int PORT = 9999;
@@ -100,6 +101,7 @@ public class Controller implements Initializable {
             new Thread(() -> {
                 try {
                     while (true) {
+
                         String str = in.readUTF();
                         if (str.startsWith("/")) {
                             if (str.equals(Command.END)) {
@@ -177,7 +179,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void CloseWindow(ActionEvent actionEvent) {
+    public void closeWindow(ActionEvent actionEvent) {
         Platform.runLater(() -> {
             Stage stage = (Stage) sendButton.getScene().getWindow();
             stage.close();
@@ -256,5 +258,9 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void changeNick(ActionEvent actionEvent) {
+        textField1.appendText(Command.CHNG_NICK + " " + nickname + " to: ");
     }
 }
