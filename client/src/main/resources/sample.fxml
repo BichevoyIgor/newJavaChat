@@ -17,7 +17,8 @@
                 <Cursor fx:constant="HAND"/>
             </cursor>
             <Menu text="File" fx:id="menuFile">
-                <MenuItem fx:id="menuItemExit" onAction="#CloseWindow" text="Close window"/>
+                <MenuItem fx:id="menuItemExit" onAction="#closeWindow" text="Close window"/>
+                <MenuItem fx:id="changeNick" onAction="#changeNick" text="Change nick name"/>
             </Menu>
         </MenuBar>
     </top>

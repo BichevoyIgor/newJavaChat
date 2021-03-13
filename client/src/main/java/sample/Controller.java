@@ -18,11 +18,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -48,6 +51,7 @@ public class Controller implements Initializable {
     public HBox authPanel;
     @FXML
     public ListView<String> clientList;
+    public MenuItem changeNick;
 
     private Socket socket;
     private final int PORT = 9999;
@@ -60,6 +64,8 @@ public class Controller implements Initializable {
     private Stage stage;
     private Stage regStage;
     private RegController regController;
+    private FileWriter writer;
+    private String historyFileName;
 
     public void setAuthentification(boolean authentification) {
         this.authentification = authentification;
@@ -111,6 +117,16 @@ public class Controller implements Initializable {
                                 String[] token = str.split("\\s");
                                 nickname = token[1];
                                 setAuthentification(true);
+                                historyFileName =String.format("history_[%s].txt", this.nickname);
+
+                                try {
+                                    writer = new FileWriter(historyFileName, true);
+                                    loadHistory(historyFileName);
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
                             }
                             if (str.startsWith(Command.CLIENT_LIST)) {
                                 String[] token = str.split("\\s");
@@ -121,21 +137,33 @@ public class Controller implements Initializable {
                                     }
                                 });
                             }
-                            if (str.equals(Command.REG_OK)){
+                            if (str.equals(Command.REG_OK)) {
                                 regController.setResultTryToReg(Command.REG_OK);
                             }
-                            if (str.equals(Command.REG_NO)){
+                            if (str.equals(Command.REG_NO)) {
                                 regController.setResultTryToReg(Command.REG_NO);
                             }
-                        } else textArea1.appendText(str + "\n");
+                        } else {
+                            textArea1.appendText(str + "\n");
+                            if (writer!=null) {
+                                writer.write(str + "\n");
+                                writer.flush();
+                            }
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
+                    if (writer!=null) {
+                        try {
+                            writer.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     setAuthentification(false);
                     setTitle("");
                     loginField.clear();
-
                     try {
                         in.close();
                         socket.close();
@@ -145,6 +173,23 @@ public class Controller implements Initializable {
                 }
             }).start();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadHistory(String historyFileName) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            List<String> historyText = Files.readAllLines(Paths.get(historyFileName));
+            int startPosition = 0;
+            if (historyText.size() > 100){
+                startPosition = historyText.size() - 100;
+            }
+            for (int i = startPosition; i < historyText.size(); i++) {
+                //sb.append(historyText.get(i));
+                textArea1.appendText((historyText.get(i)) + "\n");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -177,7 +222,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void CloseWindow(ActionEvent actionEvent) {
+    public void closeWindow(ActionEvent actionEvent) {
         Platform.runLater(() -> {
             Stage stage = (Stage) sendButton.getScene().getWindow();
             stage.close();
@@ -201,7 +246,7 @@ public class Controller implements Initializable {
             e.printStackTrace();
         } finally {
             passwordField.clear();
-        }
+         }
     }
 
     private void setTitle(String nickname) {
@@ -246,7 +291,7 @@ public class Controller implements Initializable {
         }
     }
 
-    public void registration(String login, String password, String nickName){
+    public void registration(String login, String password, String nickName) {
         //открываем сокет если он закрыт
         if (socket == null || socket.isClosed()) {
             connect();
@@ -256,5 +301,9 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void changeNick(ActionEvent actionEvent) {
+        textField1.appendText(Command.CHNG_NICK + " " + nickname + " to: ");
     }
 }

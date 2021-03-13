@@ -69,12 +69,22 @@ public class ClientHandler {
                                 sendMessage(Command.REG_OK);
                             } else sendMessage(Command.REG_NO);
                         }
+
                     }
                     //цикл работы
                     while (true) {
                         socket.setSoTimeout(0);
                         String str = in.readUTF();
                         if (str.startsWith("/")) {
+                            //смена ника
+                            if (str.startsWith(Command.CHNG_NICK)){
+                                String[] token = str.split(" ", 4);
+                                Boolean result = server.getAuthService().changeNick(token[1], token[3]);
+                                sendMessage("Никнейм изменен на " + token[3]);
+                                this.nickname = token[3];
+                                server.broadcastClientList();
+                            }
+
                             if (str.equals(Command.END)) {
                                 System.out.println("Клиент отключен " + socket.getRemoteSocketAddress());
                                 out.writeUTF(Command.END);
