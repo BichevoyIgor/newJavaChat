@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
     private ServerSocket server;
@@ -16,9 +18,11 @@ public class Server {
     private DataOutputStream out;
     private List<ClientHandler> clientHandlerList;
     private AuthService authService;
+    private ExecutorService service;
 
     public Server() {
         clientHandlerList = new CopyOnWriteArrayList<>();
+        service = Executors.newFixedThreadPool(10);
         //authService = new SimpleAuthService();
         if (!SQLHandler.connect()){
             throw new RuntimeException("Не удалось подключиться");
@@ -30,6 +34,7 @@ public class Server {
             while (true) {
                 socket = server.accept();
                 ClientHandler client = new ClientHandler(this, socket);
+                service.execute(client);
                 if (client.getLogin() == null) {
                     System.out.println("Open socket: " + socket.getRemoteSocketAddress());
                 }
@@ -38,6 +43,7 @@ public class Server {
             e.printStackTrace();
         } finally {
             try {
+                service.shutdownNow();
                 SQLHandler.disconnect();
                 socket.close();
                 server.close();
