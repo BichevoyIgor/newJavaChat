@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.logging.Level;
 
 public class ClientHandler implements Runnable {
     private Server server;
@@ -68,7 +69,8 @@ public class ClientHandler implements Runnable {
                             nickname = newNick;
                             sendMessage(Command.AUTH_OK + " " + nickname);
                             server.subscribe(this);
-                            System.out.println("client connected with nick: " + nickname + " from " + socket.getRemoteSocketAddress());
+                            //System.out.println("client connected with nick: " + nickname + " from " + socket.getRemoteSocketAddress());
+                            Server.logger.log(Level.CONFIG,"client connected with nick: " + nickname + " from " + socket.getRemoteSocketAddress());
                             break;
                         } else {
                             sendMessage("Логин занят");
@@ -102,12 +104,14 @@ public class ClientHandler implements Runnable {
                         String[] token = str.split(" ", 4);
                         Boolean result = server.getAuthService().changeNick(token[1], token[3]);
                         sendMessage("Никнейм изменен на " + token[3]);
+                        Server.logger.log(Level.CONFIG,"Никнейм изменен на " + token[3]);
                         this.nickname = token[3];
                         server.broadcastClientList();
                     }
 
                     if (str.equals(Command.END)) {
-                        System.out.println("Клиент отключен " + socket.getRemoteSocketAddress());
+                        //System.out.println("Клиент отключен " + socket.getRemoteSocketAddress());
+                        Server.logger.log(Level.CONFIG,"Клиент отключен " + socket.getRemoteSocketAddress());
                         out.writeUTF(Command.END);
                         break;
                     }
