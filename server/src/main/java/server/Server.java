@@ -5,8 +5,12 @@ import commands.Command;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.*;
 
 public class Server {
     private ServerSocket server;
@@ -16,24 +20,44 @@ public class Server {
     private DataOutputStream out;
     private List<ClientHandler> clientHandlerList;
     private AuthService authService;
+    private ExecutorService service;
+    static final Logger logger = Logger.getLogger("logging.properties");
+    private Handler consoleHandler;
+    private Handler fileHandler;
 
     public Server() {
+
         clientHandlerList = new CopyOnWriteArrayList<>();
-        authService = new SimpleAuthService();
+        service = Executors.newFixedThreadPool(10);
+        consoleHandler = new ConsoleHandler();
+        try {
+            fileHandler = new FileHandler("Server log_%g.log", 10 * 1024, 10, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        runlog();
+        //authService = new SimpleAuthService();
+        if (!SQLHandler.connect()) {
+            throw new RuntimeException("Не удалось подключиться");
+        }
+        authService = new DBAuthService();
         try {
             server = new ServerSocket(PORT);
-            System.out.println("Сервер запущен");
+            logger.log(Level.CONFIG, "Сервер запущен");
             while (true) {
                 socket = server.accept();
                 ClientHandler client = new ClientHandler(this, socket);
+                service.execute(client);
                 if (client.getLogin() == null) {
-                    System.out.println("Open socket: " + socket.getRemoteSocketAddress());
+                    logger.log(Level.CONFIG, "Open socket: " + socket.getRemoteSocketAddress());
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
+                service.shutdownNow();
+                SQLHandler.disconnect();
                 socket.close();
                 server.close();
             } catch (IOException e) {
@@ -70,7 +94,7 @@ public class Server {
 
     public void unsubscribe(ClientHandler clientHandler, Socket socket) {
         clientHandlerList.remove(clientHandler);
-        System.out.println("socked is closed " + socket.getRemoteSocketAddress());
+        logger.log(Level.CONFIG, "socked is closed " + socket.getRemoteSocketAddress());
         broadcastClientList();
     }
 
@@ -87,14 +111,40 @@ public class Server {
         return false;
     }
 
-    public void broadcastClientList(){
+    public void broadcastClientList() {
         StringBuilder sb = new StringBuilder(Command.CLIENT_LIST);
-        for (ClientHandler c: clientHandlerList){
+        for (ClientHandler c : clientHandlerList) {
             sb.append(" ").append(c.getNickname());
         }
         String msg = sb.toString();
-        for (ClientHandler c: clientHandlerList){
+        for (ClientHandler c : clientHandlerList) {
             c.sendMessage(msg);
         }
+    }
+
+    private void runlog() {
+
+        logger.addHandler(consoleHandler);
+        logger.addHandler(fileHandler);
+        consoleHandler.setLevel(Level.CONFIG);
+        fileHandler.setLevel(Level.CONFIG);
+        consoleHandler.setFormatter(new Formatter() {
+            @Override
+            public String format(LogRecord record) {
+                return getCurrentTime() + " : " + record.getMessage() + "\n";
+            }
+        });
+        fileHandler.setFormatter(new Formatter() {
+            @Override
+            public String format(LogRecord record) {
+                return getCurrentTime() + " : " + record.getMessage() + "\n";
+            }
+        });
+        logger.setLevel(Level.CONFIG);
+    }
+
+    public String getCurrentTime() {
+        Date date = new Date();
+        return date.toString();
     }
 }

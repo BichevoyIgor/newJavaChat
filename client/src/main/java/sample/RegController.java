@@ -33,7 +33,7 @@ public class RegController {
             textArea.appendText("Регистрация прошла успешно\n");
         }
         if (comnand.equals(Command.REG_NO)) {
-            textArea.appendText("Логин или никнейм занят\n");
+            textArea.appendText("Логин занят, просьба придумать другой\n");
         }
     }
 
